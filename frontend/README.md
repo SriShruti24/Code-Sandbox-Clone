@@ -14,3 +14,36 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+----------------------------------
+## Data Fetching Strategy (TanStack Query)
+
+This project uses **TanStack Query** to manage all server-side state.
+
+### Queries
+Queries are used for **fetching data** from the server.
+Examples:
+- Fetch all sandboxes
+- Fetch sandbox details
+
+Benefits:
+- Automatic caching
+- Loading and error handling
+- Background refetching
+
+---
+
+### Mutations
+Mutations are used for **modifying server data**.
+Examples:
+- Create a new sandbox
+- Update sandbox files
+- Delete a sandbox
+
+After a successful mutation, related queries are invalidated to keep the UI in sync.
+
+---
+
+## Query Invalidation
+Query invalidation ensures that the application always shows the latest server data after mutations without manual refresh logic.
+
+---
