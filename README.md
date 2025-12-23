@@ -140,3 +140,6 @@ I want this all command execute inside projects folder --> unique id folder insi
 ____________________________________-
 to create folder of react we use 
 npm create vite@Latest sandbox  -- --template react
+------------------------------------------------
+npm i directory-tree
+dsa ques or backend ques for  recursive approach for folder and fle directory path printing
