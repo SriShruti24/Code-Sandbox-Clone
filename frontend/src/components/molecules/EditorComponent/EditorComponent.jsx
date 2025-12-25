@@ -1,12 +1,15 @@
 import Editor from "@monaco-editor/react";
-import { useEffect, useState } from "react";
-import { useEditorSocketStore } from "../../../stores/editorSocketStore";
+import { useEffect, useRef, useState } from "react";
 import { useActiveFileTabStore } from "../../../stores/activeFileTabStore";
+import { useEditorSocketStore } from "../../../stores/editorSocketStore";
+import { extensionToFileType } from '../../../utils/extensionToFileType';
 
 export const EditorComponent = () => {
+  const timerId = useRef(null); 
   const [theme, setTheme] = useState(null);
+
+  const { activeFileTab } = useActiveFileTabStore();
   const { editorSocket } = useEditorSocketStore();
-  const { activeFileTab, setActiveFileTab } = useActiveFileTabStore();
 
   useEffect(() => {
     let mounted = true;
@@ -30,10 +33,23 @@ export const EditorComponent = () => {
     monaco.editor.defineTheme("dracula", theme);
     monaco.editor.setTheme("dracula");
   }
-  editorSocket?.on("readFileSuccess", (data) => {
-    console.log("Read file success", data);
-    setActiveFileTab(data.path, data.value);
-  });
+
+  function handleChange(value) {
+    // Clear old timer
+    if (timerId.current != null) {
+      clearTimeout(timerId.current);
+    }
+
+    // Set new timer
+    timerId.current = setTimeout(() => {
+      const editorContent = value;
+      console.log("Sending writefile event");
+      editorSocket.emit("writeFile", {
+        data: editorContent,
+        pathToFileOrFolder: activeFileTab.path
+      });
+    }, 2000);
+  }
 
   return (
     <>
@@ -41,11 +57,16 @@ export const EditorComponent = () => {
         <Editor
           height="80vh"
           defaultLanguage={undefined}
-          value={activeFileTab?.value ? activeFileTab.value : '// Welcome to the playground'}
+           language={extensionToFileType(activeFileTab?.extension)}
+          onChange={handleChange}
+          value={
+            activeFileTab?.value
+              ? activeFileTab.value
+              : "// Welcome to the playground"
+          }
           onMount={handleEditorMount}
         />
       )}
     </>
   );
 };
-

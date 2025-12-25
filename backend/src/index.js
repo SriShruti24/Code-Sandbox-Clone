@@ -54,7 +54,7 @@ editorNamespace.on("connection", (socket) => {
     });
   }
 
-  handleEditorSocketEvents(socket);
+  handleEditorSocketEvents(socket,editorNamespace);
 
 //   socket.on("message", (data) => {
 //     console.log("got a message event", data);
