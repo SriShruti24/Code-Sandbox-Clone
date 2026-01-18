@@ -69,7 +69,9 @@ export const TreeNode = ({
                         color: "white",
                         backgroundColor: "transparent",
                         paddingTop: "15px",
-                        fontSize: "16px"
+                        fontSize: "16px",
+                        marginTop: "10px",
+                         marginBottom: "10px" 
                     }}
                 >
                     {visibility[fileFolderData.name] ? <IoIosArrowDown /> : <IoIosArrowForward />}
@@ -85,6 +87,8 @@ export const TreeNode = ({
                             fontSize: "15px",
                             cursor: "pointer",
                             marginLeft: "5px",
+                            marginTop: "10px",
+                            marginBottom: "10px" 
                             // color: "black"
                         }}
                           onContextMenu={(e) => handleContextMenuForFiles(e, fileFolderData.path)}

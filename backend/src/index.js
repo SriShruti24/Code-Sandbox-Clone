@@ -6,7 +6,7 @@ import apiRouter from "./routes/index.js";
 import cors from "cors";
 import chokidar from "chokidar";
 import { handleEditorSocketEvents } from "./socketHandlers/editorHandler.js";
-
+import { handleContainerCreate } from './containers/handleContainerCreate.js';
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -68,7 +68,26 @@ editorNamespace.on("connection", (socket) => {
 //   });
  });
 
+ 
+ const terminalNamespace = io.of('/terminal');
+terminalNamespace.on("connection", (socket) => {
+    console.log("terminal connected");
+
+    let projectId = socket.handshake.query['projectId'];
+
+    socket.on("shell-input", (data) => {
+        console.log("input recevied", data);
+        terminalNamespace.emit("shell-output", data);
+    });
+
+    socket.on("disconnect", () => {
+        console.log("terminal disconnected");
+    });
+    handleContainerCreate(projectId, socket);
+})
+
 server.listen(PORT, () => {
   //its have express configuration as well as socket.io server
   console.log(`Server is running on port ${PORT}`);
+    console.log(process.cwd())
 });
