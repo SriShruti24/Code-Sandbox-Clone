@@ -39,7 +39,7 @@ export const ProjectPlayground = () => {
               paddingTop: "0.3vh",
               minWidth: "250px",
               maxWidth: "25%",
-              height: "99.7vh",
+              height: "79.7vh",
               overflow: "auto",
             }}
           >
