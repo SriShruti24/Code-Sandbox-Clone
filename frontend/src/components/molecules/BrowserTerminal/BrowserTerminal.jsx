@@ -1,16 +1,14 @@
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import "@xterm/xterm/css/xterm.css"; // required styles
+import "@xterm/xterm/css/xterm.css";
 import { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import {AttachAddon} from '@xterm/addon-attach';
-
+import { AttachAddon } from '@xterm/addon-attach';
+import { useTerminalSocketStore } from '../../../stores/terminalSocketStore';
 
 export const BrowserTerminal = () => {
-
     const terminalRef = useRef(null);
-    const socket = useRef(null);
-    const {projectId: projectIdFromUrl } = useParams();
+    const { terminalSocket } = useTerminalSocketStore();
+
     useEffect(() => {
         const term = new Terminal({
             cursorBlink: true,
@@ -27,26 +25,38 @@ export const BrowserTerminal = () => {
             fontSize: 16,
             fontFamily: "'Fira Code', monospace",
             fontLigatures: true,
-            convertEol: true, // convert CRLF to LF
+            convertEol: true,
         });
 
         term.open(terminalRef.current);
-        let fitAddon = new FitAddon();
+
+        const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
         fitAddon.fit();
 
-        const ws = new WebSocket("ws://localhost:3000/terminal?projectId="+projectIdFromUrl);
+        let handleOpen;
 
-        ws.onopen=()=>{
-            const attachAddon = new AttachAddon(ws);
-            term.loadAddon(attachAddon);
-            socket.current=ws;
+        if (terminalSocket) {
+            handleOpen = () => {
+                const attachAddon = new AttachAddon(terminalSocket);
+                term.loadAddon(attachAddon);
+            };
+
+            // If socket already open, attach immediately
+            if (terminalSocket.readyState === WebSocket.OPEN) {
+                handleOpen();
+            } else {
+                terminalSocket.addEventListener("open", handleOpen);
+            }
         }
 
         return () => {
+            if (terminalSocket && handleOpen) {
+                terminalSocket.removeEventListener("open", handleOpen);
+            }
             term.dispose();
-        }
-    }, [])
+        };
+    }, [terminalSocket]);
 
     return (
         <div
@@ -55,10 +65,8 @@ export const BrowserTerminal = () => {
                 height: "25vh",
                 overflow: "auto",
             }}
-            className='terminal'
+            className="terminal"
             id="terminal-container"
-        >
-
-        </div>
-    )
-}
+        />
+    );
+};

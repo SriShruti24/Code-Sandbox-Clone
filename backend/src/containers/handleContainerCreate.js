@@ -1,7 +1,17 @@
 import Docker from "dockerode";
 // import path from 'path';
 const docker = new Docker();
+export const listContainer = async () => {
 
+    const containers = await docker.listContainers();
+    console.log("Containers", containers);
+    // PRINT PORTS ARRAY FROM ALL CONTAINER
+    containers.forEach((containerInfo) => {
+        console.log(containerInfo.Ports);
+    })
+}
+
+//TODO : Handle to not create a duplicate port for the same project id and make it fix 
 export const handleContainerCreate = async (projectId,terminalSocket,req,tcpSocket,head) => {
   console.log("Project id received for container create", projectId);
   try {
@@ -54,3 +64,5 @@ export const handleContainerCreate = async (projectId,terminalSocket,req,tcpSock
 
 
 
+//TODO ABSTRACT CLASS 
+//TODO TO HAVE ANGULAR AND NEXTJS CONTAINER HANDLING AS WELL
