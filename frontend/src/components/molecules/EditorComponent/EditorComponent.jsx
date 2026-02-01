@@ -55,7 +55,7 @@ export const EditorComponent = () => {
     <>
       {theme && (
         <Editor
-          height="80vh"
+         
           defaultLanguage={undefined}
            language={extensionToFileType(activeFileTab?.extension)}
           onChange={handleChange}

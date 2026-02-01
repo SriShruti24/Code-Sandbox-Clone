@@ -28,11 +28,18 @@ export const BrowserTerminal = () => {
             convertEol: true,
         });
 
-        term.open(terminalRef.current);
-
         const fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
-        fitAddon.fit();
+
+        term.open(terminalRef.current);
+        fitAddon.fit(); // Initial fit
+
+        // 🔥 Auto-resize when container size changes
+        const resizeObserver = new ResizeObserver(() => {
+            fitAddon.fit();
+        });
+
+        resizeObserver.observe(terminalRef.current);
 
         let handleOpen;
 
@@ -42,7 +49,6 @@ export const BrowserTerminal = () => {
                 term.loadAddon(attachAddon);
             };
 
-            // If socket already open, attach immediately
             if (terminalSocket.readyState === WebSocket.OPEN) {
                 handleOpen();
             } else {
@@ -51,6 +57,7 @@ export const BrowserTerminal = () => {
         }
 
         return () => {
+            resizeObserver.disconnect();
             if (terminalSocket && handleOpen) {
                 terminalSocket.removeEventListener("open", handleOpen);
             }
@@ -62,11 +69,10 @@ export const BrowserTerminal = () => {
         <div
             ref={terminalRef}
             style={{
-                height: "25vh",
-                overflow: "auto",
+                height: "100%",   // 🔥 important: fill allotment pane
+                width: "100%",
             }}
             className="terminal"
-            id="terminal-container"
         />
     );
 };
