@@ -47,6 +47,11 @@ editorNamespace.on("connection", (socket) => {
 
     watcher.on("all", (event, path) => {
       console.log(event, path);
+      editorNamespace.emit("fileChanged", {
+        event: event,
+        path: path,
+        projectId: projectId
+      });
     });
   }
   

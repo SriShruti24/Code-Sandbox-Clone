@@ -19,6 +19,22 @@ export const Browser = ({ projectId }) => {
         }
     }, [port, editorSocket,projectId]);
 
+    useEffect(() => {
+        const handleFileChange = (data) => {
+            console.log("File changed, auto-refreshing browser:", data);
+            if(browserRef.current) {
+                const oldAddr = browserRef.current.src;
+                browserRef.current.src = oldAddr;
+            }
+        };
+
+        editorSocket?.on("fileChanged", handleFileChange);
+
+        return () => {
+            editorSocket?.off("fileChanged", handleFileChange);
+        };
+    }, [editorSocket]);
+
     if(!port) {
         return <div>Loading....</div>
     }
