@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    image: srishruti24/laughingchef:backend
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    volumes:
+      - ./projects:/app/projects  # Keep project data persistent on host
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PORT=3000
+      - HOST_PROJECT_PATH=${HOST_PROJECT_PATH:-}
+      - SANDBOX_IMAGE=srishruti24/laughingchef:sandbox
+    networks:
+      - sandbox-network
+
+  frontend:
+    image: srishruti24/laughingchef:frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+      - VITE_BACKEND_URL=http://localhost:3000
+    depends_on:
+      - backend
+    networks:
+      - sandbox-network
+
+networks:
+  sandbox-network:
+    driver: bridge

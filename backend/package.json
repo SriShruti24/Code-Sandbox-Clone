@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": " npx nodemon src/index.js"
+    "dev": "npx nodemon --ignore projects/ src/index.js"
   },
   "keywords": [],
   "author": "",

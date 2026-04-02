@@ -21,7 +21,8 @@ export const handleContainerCreate = async (
   try {
     // Delete any existing container running with same name
     const existingContainer = await docker.listContainers({
-      name: projectId,
+      all: true,
+      filters: JSON.stringify({ name: [`^/${projectId}$`] }),
     });
 
     console.log("Existing container", existingContainer);
@@ -34,8 +35,10 @@ export const handleContainerCreate = async (
 
     console.log("Creating a new container");
 
+    const sandboxImageName = process.env.SANDBOX_IMAGE || "sandbox";
+    
     const container = await docker.createContainer({
-      Image: "sandbox", // name given by us for the written dockerfile
+      Image: sandboxImageName, // use environment variable if running locally vs prod
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
@@ -53,7 +56,7 @@ export const handleContainerCreate = async (
       HostConfig: {
         Binds: [
           // mounting the project directory to the container
-          `${process.cwd()}/projects/${projectId}:/home/sandbox/app`,
+          `${process.env.HOST_PROJECT_PATH || process.cwd()}/projects/${projectId}:/home/sandbox/app`,
         ],
         PortBindings: {
           "5173/tcp": [

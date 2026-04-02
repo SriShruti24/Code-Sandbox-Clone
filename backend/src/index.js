@@ -6,6 +6,7 @@ import apiRouter from "./routes/index.js";
 import cors from "cors";
 import chokidar from "chokidar";
 import { handleEditorSocketEvents } from "./socketHandlers/editorHandler.js";
+import "./terminalApp.js";
 
 const app = express();
 const server = createServer(app);
@@ -21,7 +22,7 @@ app.use(cors());
 
 app.use("/api", apiRouter);
 
-app.get("/ping", (req, res) => {
+app.get("/ping", (req, res) => { 
   return res.json({ message: "pong" });
 });
 
@@ -57,6 +58,13 @@ editorNamespace.on("connection", (socket) => {
   
 
   handleEditorSocketEvents(socket, editorNamespace);
+
+  socket.on("disconnect", async () => {
+    console.log("editor disconnected");
+    if (watcher) {
+      await watcher.close();
+    }
+  });
 });
 
 server.listen(PORT, () => {
