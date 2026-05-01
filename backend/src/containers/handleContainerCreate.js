@@ -84,7 +84,7 @@ export const handleContainerCreate = async (
 };
 export async function getContainerPort(containerName) {
     const container = await docker.listContainers({
-        name: containerName
+        filters: JSON.stringify({ name: [`^/${containerName}$`] })
     });
 
     if(container.length > 0) {

@@ -61,12 +61,12 @@ export const Browser = ({ projectId }) => {
                     backgroundColor: "#282a35",
                 }}
                 prefix={<ReloadOutlined onClick={handleRefresh} />}
-                defaultValue={`http://localhost:${port}`}
+                defaultValue={`http://${window.location.hostname}:${port}`}
             />
 
             <iframe 
                 ref={browserRef}
-                src={`http://localhost:${port}`}
+                src={`http://${window.location.hostname}:${port}`}
                 style={{
                     width: "100%",
                     height: "95vh",

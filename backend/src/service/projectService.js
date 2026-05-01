@@ -31,7 +31,7 @@ export const createProjectService = async () => {
   const projectId = uuid4();
   console.log("New project id is", projectId);
 
-  await fs.mkdir(`./projects/${projectId}`);
+  await fs.mkdir(`./projects/${projectId}`, { recursive: true });
 
   // After this call the npm creaste vite command in the newly created project folder
 
@@ -43,6 +43,10 @@ export const createProjectService = async () => {
   const viteConfigPath = path.join(`./projects/${projectId}/sandbox`, 'vite.config.js');
   await fs.writeFile(viteConfigPath, VITE_CONFIG_TEMPLATE);
   console.log("Updated vite.config.js with Docker-optimized settings");
+
+  // Fix permissions so the sandbox user (non-root) can write to this directory
+  await execPromisified(`chmod -R 777 ./projects/${projectId}`);
+  console.log("Fixed permissions for sandbox user");
 
   return projectId;
 };
