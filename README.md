@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <video src="docs/assets/code-sandbox.mp4" width="100%" controls autoplay muted loop></video>
+  <video src="docs/assets/code-sandbox.mp4" type="video/mp4" width="100%" controls autoplay muted loop></video>
 </p>
 
 <p align="center">
@@ -370,7 +370,7 @@ Code-Sandbox-Clone/
 - **Demo Video**: [Watch the walkthrough](docs/assets/code-sandbox.mp4)
 
 <p align="center">
-  <video src="docs/assets/code-sandbox.mp4" width="100%" controls></video>
+  <video src="docs/assets/code-sandbox.mp4" type="video/mp4" width="100%" controls></video>
 </p>
 
 ---
