@@ -84,3 +84,37 @@ export const getAgentLogsController = async (req, res) => {
     res.json({ success: true, data: [] }); // Return empty if no logs yet
   }
 };
+
+/**
+ * GET /api/v1/agent/prompts
+ */
+export const getPromptsController = async (req, res) => {
+  try {
+    const promptsPath = path.resolve("./src/config/agent_prompts.json");
+    const data = await fs.readFile(promptsPath, "utf-8");
+    const prompts = JSON.parse(data);
+    res.json({ success: true, data: prompts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to read prompts" });
+  }
+};
+
+/**
+ * PUT /api/v1/agent/prompts
+ */
+export const updatePromptsController = async (req, res) => {
+  const { systemPrompt } = req.body;
+
+  if (!systemPrompt) {
+    return res.status(400).json({ success: false, message: "systemPrompt is required" });
+  }
+
+  try {
+    const promptsPath = path.resolve("./src/config/agent_prompts.json");
+    const prompts = { systemPrompt };
+    await fs.writeFile(promptsPath, JSON.stringify(prompts, null, 2));
+    res.json({ success: true, message: "Prompts updated successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to update prompts" });
+  }
+};

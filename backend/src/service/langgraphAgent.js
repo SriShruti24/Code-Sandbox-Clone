@@ -5,7 +5,6 @@ import { z } from "zod";
 import fs from "fs/promises";
 import path from "path";
 import Docker from "dockerode";
-import promptsConfig from "../config/agent_prompts.json" assert { type: "json" };
 
 const docker = new Docker();
 
@@ -193,6 +192,10 @@ export async function runAgent(projectId, goal, emitLog) {
   emitLog({ type: "status", message: "🧠 Agent initialized. Starting work..." });
 
   try {
+    const promptsPath = path.resolve("./src/config/agent_prompts.json");
+    const promptsRaw = await fs.readFile(promptsPath, "utf-8");
+    const promptsConfig = JSON.parse(promptsRaw);
+
     const result = await agent.invoke(
       {
         messages: [

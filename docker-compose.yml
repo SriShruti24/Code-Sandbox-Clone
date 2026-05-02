@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  # ── Backend API + Socket.io Server ──
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - HOST_PROJECT_PATH=${HOST_PROJECT_PATH:-./backend/projects}
+      - SANDBOX_IMAGE=sandbox
+    volumes:
+      - ./backend/projects:/app/projects
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - sandbox-build
+    restart: unless-stopped
+
+  # ── Frontend (Vite Dev / Serve) ──
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:3000
+      - VITE_TERMINAL_URL=localhost:4000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ── Build the sandbox base image ──
+  sandbox-build:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.sandbox
+    image: sandbox
+    entrypoint: ["echo", "Sandbox image built successfully"]
