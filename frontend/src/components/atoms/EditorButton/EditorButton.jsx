@@ -1,21 +1,28 @@
+import { FileIcon } from '../FileIcon/FileIcon';
 import './EditorButton.css';
 
-export const EditorButton = ({ isActive }) => {
-
-    function handleClick() {
-        // TODO: Implement click handler
-    }
+export const EditorButton = ({ name, extension, isActive, onSelect, onClose }) => {
     return (
-        <button
-            className="editor-button"
-            style={{
-                color: isActive ? 'white' : '#959eba',
-                backgroundColor: isActive ? '#303242' : '#4a4859',
-                borderTop: isActive ? '2px solid #f7b9dd' : 'none',
-            }}
-            onClick={handleClick}
+        <div
+            className={`editor-tab ${isActive ? 'active' : ''}`}
+            onClick={onSelect}
         >
-            file.js
-        </button>
-    )
-}
+            <span className="tab-icon">
+                <FileIcon extension={extension} />
+            </span>
+
+            <span className="tab-name">{name}</span>
+
+            <button
+                className="tab-close"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                }}
+                title="Close"
+            >
+                ×
+            </button>
+        </div>
+    );
+};

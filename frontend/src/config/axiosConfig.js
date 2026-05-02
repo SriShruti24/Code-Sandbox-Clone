@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const backendHost = import.meta.env.VITE_BACKEND_URL || `http://${window.location.hostname}:3000`;
+
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL || ""
+    baseURL: backendHost
 });
 
 export default axiosInstance;

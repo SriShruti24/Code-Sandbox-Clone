@@ -17,6 +17,11 @@ export const handleContainerCreate = async (
 
     if (existingContainer.length > 0) {
       const container = docker.getContainer(existingContainer[0].Id);
+      const containerInfo = await container.inspect();
+      if (containerInfo.State.Running) {
+        return container;
+      }
+      // If it exists but is not running, remove it and create a new one (or just start it, but remove is safer for clean state)
       await container.remove({ force: true });
     }
 

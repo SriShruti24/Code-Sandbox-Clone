@@ -21,10 +21,14 @@ export const Browser = ({ projectId }) => {
 
     useEffect(() => {
         const handleFileChange = (data) => {
-            if(browserRef.current) {
-                const oldAddr = browserRef.current.src;
-                browserRef.current.src = oldAddr;
-            }
+            // Give Vite a moment to restart before refreshing the iframe
+            setTimeout(() => {
+                if(browserRef.current) {
+                    const url = new URL(browserRef.current.src);
+                    url.searchParams.set('t', Date.now().toString());
+                    browserRef.current.src = url.toString();
+                }
+            }, 1500);
         };
 
         editorSocket?.on("fileChanged", handleFileChange);
@@ -35,13 +39,14 @@ export const Browser = ({ projectId }) => {
     }, [editorSocket]);
 
     if(!port) {
-        return <div>Loading....</div>
+        return <div style={{ color: "white", padding: "20px" }}>Spinning up sandbox...</div>
     }
 
     function handleRefresh() {
         if(browserRef.current) {
-            const oldAddr = browserRef.current.src;
-            browserRef.current.src = oldAddr;
+            const url = new URL(browserRef.current.src);
+            url.searchParams.set('t', Date.now().toString());
+            browserRef.current.src = url.toString();
         }
     }
 
@@ -60,7 +65,8 @@ export const Browser = ({ projectId }) => {
                     backgroundColor: "#282a35",
                 }}
                 prefix={<ReloadOutlined onClick={handleRefresh} />}
-                defaultValue={`http://${window.location.hostname}:${port}`}
+                value={`http://${window.location.hostname}:${port}`}
+                readOnly
             />
 
             <iframe 

@@ -4,7 +4,6 @@ import { FileIcon } from "../../atoms/FileIcon/FileIcon";
 import { useEditorSocketStore } from "../../../stores/editorSocketStore";
 import { useFileContextMenuStore } from "../../../stores/fileContextMenuStore";
 import { FaFolder, FaFolderOpen } from "react-icons/fa";
-import { VscFile } from "react-icons/vsc";
 
 export const TreeNode = ({ fileFolderData }) => {
   const [visibility, setVisibility] = useState({});
@@ -24,7 +23,6 @@ export const TreeNode = ({ fileFolderData }) => {
     return names[names.length - 1];
   }
   function handleDoubleClick(fileFolderData) {
-    console.log("Double clicked on", fileFolderData);
     editorSocket.emit("readFile", {
       pathToFileOrFolder: fileFolderData.path,
     });
@@ -33,7 +31,6 @@ export const TreeNode = ({ fileFolderData }) => {
   function handleContextMenu(e, path, isFolder) {
     e.preventDefault();
     e.stopPropagation();
-    console.log("Right clicked on", path, "isFolder:", isFolder);
     openMenu({
       x: e.clientX,
       y: e.clientY,
@@ -41,10 +38,6 @@ export const TreeNode = ({ fileFolderData }) => {
       isFolder
     });
   }
-
-  useEffect(() => {
-    console.log("Visibility changed", visibility);
-  }, [visibility]);
 
   return (
     fileFolderData && (

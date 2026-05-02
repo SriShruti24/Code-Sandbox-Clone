@@ -45,10 +45,7 @@ editorNamespace.on("connection", (socket) => {
   if (projectId) {
     var watcher = chokidar.watch(`./projects/${projectId}`, {
       ignored: (path) => path.includes("node_modules"),
-      persistent: true ,
-      awaitWriteFinish: {
-        stabilityThreshold: 2000,
-      },
+      persistent: true,
       ignoreInitial: true 
     });
 

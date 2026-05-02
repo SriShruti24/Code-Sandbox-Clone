@@ -30,7 +30,7 @@ export const ProjectPlayground = () => {
         if(projectIdFromUrl) {
             setProjectId(projectIdFromUrl);
         
-            const editorSocketConn = io("/editor", {
+            const editorSocketConn = io(import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/editor", {
                 query: {
                     projectId: projectIdFromUrl
                 }
@@ -38,7 +38,8 @@ export const ProjectPlayground = () => {
 
             try {
                 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                const wsUrl = `${protocol}//${window.location.host}/terminal?projectId=${projectIdFromUrl}`;
+                const terminalHost = import.meta.env.VITE_TERMINAL_URL || `${window.location.hostname}:4000`;
+                const wsUrl = `${protocol}//${terminalHost}/terminal?projectId=${projectIdFromUrl}`;
                 const ws = new WebSocket(wsUrl);
                 setTerminalSocket(ws);
             } catch (error) {

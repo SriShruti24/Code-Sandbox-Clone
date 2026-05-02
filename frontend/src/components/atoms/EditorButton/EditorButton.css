@@ -1,12 +1,91 @@
-.editor-button {
+.editor-tab-bar {
+    display: flex;
+    align-items: center;
+    background-color: #21222c;
+    overflow-x: auto;
+    min-height: 36px;
+    border-bottom: 1px solid #191a21;
+}
+
+.editor-tab-bar::-webkit-scrollbar {
+    height: 3px;
+}
+
+.editor-tab-bar::-webkit-scrollbar-thumb {
+    background-color: #44475a;
+    border-radius: 3px;
+}
+
+.editor-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border: none;
     outline: none;
-    background-color: #303242;
+    background-color: #282a36;
+    color: #6272a4;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    white-space: nowrap;
+    border-right: 1px solid #191a21;
+    transition: background-color 0.15s, color 0.15s;
+    min-height: 36px;
+    position: relative;
+}
+
+.editor-tab:hover {
+    background-color: #2c2e3d;
+}
+
+.editor-tab.active {
+    background-color: #282a36;
+    color: #f8f8f2;
+    border-bottom: 2px solid #bd93f9;
+}
+
+.editor-tab:not(.active) {
+    background-color: #21222c;
+    border-bottom: 2px solid transparent;
+}
+
+.editor-tab .tab-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.editor-tab .tab-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+}
+
+.editor-tab .tab-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: #6272a4;
+    cursor: pointer;
     font-size: 14px;
-    height: 30px;
-    border-left: none;
-    border-bottom: none;
-    border-top: 1px solid #f7b9dd;
-    color: white;
-    min-width: 100px;
-    padding: 3px 7px 3px 7px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0;
+    transition: opacity 0.15s, background-color 0.15s, color 0.15s;
+}
+
+.editor-tab:hover .tab-close,
+.editor-tab.active .tab-close {
+    opacity: 1;
+}
+
+.editor-tab .tab-close:hover {
+    background-color: #44475a;
+    color: #f8f8f2;
 }

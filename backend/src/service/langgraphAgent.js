@@ -1,10 +1,11 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import fs from "fs/promises";
 import path from "path";
 import Docker from "dockerode";
+import promptsConfig from "../config/agent_prompts.json" assert { type: "json" };
 
 const docker = new Docker();
 
@@ -13,7 +14,7 @@ const docker = new Docker();
  * All file operations are relative to the sandbox/ directory inside the project.
  * All commands run inside the sandbox/ directory in the container.
  */
-function createSandboxTools(projectId) {
+export function createSandboxTools(projectId) {
   const sandboxRoot = path.resolve(`./projects/${projectId}/sandbox`);
 
   // The working directory inside the Docker container where the Vite project lives
@@ -176,9 +177,9 @@ function createSandboxTools(projectId) {
  * Streams agent thoughts and tool calls to the frontend via socket.
  */
 export async function runAgent(projectId, goal, emitLog) {
-  const llm = new ChatGoogleGenerativeAI({
-    model: "gemini-2.0-flash",
-    apiKey: process.env.GEMINI_API_KEY,
+  const llm = new ChatGroq({
+    model: "qwen/qwen3-32b",
+    apiKey: process.env.GROQ_API_KEY,
     temperature: 0.2,
   });
 
@@ -197,30 +198,7 @@ export async function runAgent(projectId, goal, emitLog) {
         messages: [
           {
             role: "system",
-            content: `You are CogniBox, an autonomous AI developer working inside a sandboxed coding environment.
-You have access to a real file system and a real Docker container with a terminal.
-
-PROJECT STRUCTURE:
-This is a React + Vite project. The project root contains:
-- package.json, vite.config.js, index.html — project configuration
-- src/ — source code (App.jsx, main.jsx, App.css, index.css, etc.)
-- src/components/ — React components (create this if needed)
-- public/ — static assets (images, icons)
-- node_modules/ — installed dependencies (do NOT modify)
-
-CRITICAL RULES:
-1. ALWAYS start by running "listFiles" on "." and "src" to understand the current project structure.
-2. ALWAYS use "readFile" to understand existing code BEFORE modifying it.
-3. Use RELATIVE paths only (e.g. "src/App.jsx", NOT "/home/sandbox/app/sandbox/src/App.jsx").
-4. NEVER create new top-level project directories. Work within the existing structure (src/, public/).
-5. When creating new components, put them in "src/components/" (create the directory if needed).
-6. When you need to install packages, use "runCommand" with "npm install <package>".
-7. The Vite dev server auto-reloads on file changes — you do NOT need to restart it after editing files.
-8. To check for errors, use "runCommand" with "npm run build".
-9. If you need to create new CSS files, put them in "src/".
-10. Do NOT run "cd" commands — you are already in the correct directory.
-11. Do NOT create files outside the project structure (no random folders).
-12. Be thorough: read → plan → write → verify.`,
+            content: promptsConfig.systemPrompt,
           },
           {
             role: "user",
@@ -232,7 +210,7 @@ CRITICAL RULES:
         callbacks: [
           {
             handleLLMStart: (llm, prompts) => {
-              emitLog({ type: "thinking", message: "🤔 Agent is thinking..." });
+              emitLog({ type: "thinking", message: "Agent is thinking..." });
             },
             handleLLMEnd: (output) => {
               // Extract the text content from the LLM response
@@ -260,7 +238,18 @@ CRITICAL RULES:
               });
             },
             handleToolEnd: (output) => {
-              const text = typeof output === "string" ? output : String(output);
+              let text;
+              if (typeof output === "string") {
+                text = output;
+              } else if (output && typeof output.content === "string") {
+                text = output.content;
+              } else {
+                try {
+                  text = JSON.stringify(output);
+                } catch {
+                  text = String(output);
+                }
+              }
               // Truncate very long outputs for the frontend
               const truncated = text.length > 2000 ? text.substring(0, 2000) + "\n...(truncated)" : text;
               emitLog({
@@ -269,7 +258,7 @@ CRITICAL RULES:
               });
             },
             handleChainError: (err) => {
-              emitLog({ type: "error", message: `❌ Error: ${err.message}` });
+              emitLog({ type: "error", message: `Error: ${err.message}` });
             },
           },
         ],
@@ -282,11 +271,11 @@ CRITICAL RULES:
       ? lastMessage.content
       : JSON.stringify(lastMessage.content);
 
-    emitLog({ type: "done", message: `✅ Agent finished:\n${finalText}` });
+    emitLog({ type: "done", message: `Agent finished:\n${finalText}` });
 
     return { success: true, response: finalText };
   } catch (err) {
-    emitLog({ type: "error", message: `❌ Agent failed: ${err.message}` });
+    emitLog({ type: "error", message: `Agent failed: ${err.message}` });
     return { success: false, error: err.message };
   }
 }

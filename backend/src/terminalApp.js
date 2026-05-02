@@ -25,6 +25,7 @@ const webSocketForTerminal = new WebSocketServer({
 });
 
 webSocketForTerminal.on("connection", async (ws, req, container) => {
+    console.info(`Incoming Terminal WebSocket connection: ${req.url}`);
     const isTerminal = req.url.includes("/terminal");
 
     if(isTerminal) {

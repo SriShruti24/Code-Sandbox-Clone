@@ -1,145 +1,72 @@
-🔧 Core Engine: Project Execution & Sandbox Automation
+# CogniBox: Agentic AI Code Sandbox 🚀
 
-This module represents the core backend engine of the CodeSandbox clone. It is responsible for creating projects, executing commands, and managing runtime workflows programmatically using Node.js.
+CogniBox is an autonomous, browser-based development environment where an AI agent works alongside you. It isn't just an IDE; it's a **collaborative engineering system** designed for the Veersa Hackathon 2027.
 
-At the heart of this system is controlled OS-level command execution, which enables the platform to behave like a real online IDE.
+## 🧠 Agentic AI Architecture (Mandatory Theme)
+At the core of CogniBox is a **ReAct Agent** powered by **LangGraph** and **Groq**. 
+- **Reasoning**: The agent doesn't just predict text; it observes the sandbox state, plans its next move, and reasons through complex coding tasks.
+- **Autonomous Execution**: The agent has access to a real file system and a live terminal via a set of custom tools:
+  - `listFiles`: Explore project structure.
+  - `readFile` / `writeFile`: Direct code manipulation.
+  - `runCommand`: Execute shell commands (npm, git, etc.) inside the sandbox.
+- **Inspectable Prompts**: The agent's logic is defined in `backend/src/config/agent_prompts.json`, allowing reviewers to inspect and tune its behavior.
 
-🚀 Why This Is the Core Logic of the Project
+## 🏗️ System Design
+CogniBox is built with a high-performance, modular architecture:
+1. **Frontend (React 19 + Zustand)**: A premium, dark-mode UI with Monaco Editor and XTerm.js.
+2. **Backend (Express + Node.js)**: Orchestrates project lifecycles and manages AI agent workflows.
+3. **Infrastructure (Docker)**: Every sandbox runs in a fully isolated Docker container, ensuring security and consistency.
+4. **Real-time Sync (Socket.io)**: Streams file changes, terminal output, and agent logs instantly to the browser.
 
-A CodeSandbox-style platform is not just a UI—it must dynamically perform developer operations such as:
+### Architecture Diagram
+```mermaid
+graph TD
+    User((User)) -->|Interacts| UI[React Frontend]
+    UI -->|Socket.io| BE[Express Backend]
+    UI -->|WebSocket| Terminal[Terminal Server]
+    BE -->|Docker API| Sandbox[Isolated Docker Container]
+    BE -->|LangGraph| Agent[AI Agent]
+    Agent -->|Tools| Sandbox
+    Sandbox -->|Chokidar| Watcher[File Watcher]
+    Watcher -->|Events| UI
+```
 
-Creating isolated project directories
+## 🛠️ Tech Stack
+- **Frontend**: React 19, Vite, Zustand, TanStack Query, Monaco Editor, XTerm.js, Ant Design.
+- **Backend**: Node.js, Express, Socket.io, Dockerode, Chokidar.
+- **AI**: LangGraph, LangChain, Groq (qwen-32b).
 
-Initializing projects (npm init)
+## 🚀 Getting Started
 
-Installing dependencies (npm install)
+### Prerequisites
+- Docker installed and running.
+- Node.js 18+.
 
-Running development servers (npm start)
+### Setup
+1. **Clone the repo**
+2. **Backend Configuration**:
+   Create `backend/.env`:
+   ```env
+   PORT=3000
+   GROQ_API_KEY=your_groq_key
+   SANDBOX_IMAGE=sandbox
+   ```
+3. **Frontend Configuration**:
+   Create `frontend/.env`:
+   ```env
+   VITE_BACKEND_URL=http://localhost:3000
+   VITE_TERMINAL_URL=localhost:4000
+   ```
+4. **Install & Run**:
+   - `cd backend && npm install && npm run dev`
+   - `cd frontend && npm install && npm run dev`
 
-Capturing build logs and runtime errors
+## 🧪 Testing & Reliability
+CogniBox follows engineering best practices:
+- **Unit Testing**: Sandbox tools are validated for safety and correctness.
+- **Manual Verification**: End-to-end flows are tested via live playground sessions.
 
-Returning execution output to the frontend in real time
-
-All of these operations require executing shell commands from the backend.
-
-This module is the foundation that enables all of those features.
-
-⚙️ How It Works (Execution Flow)
-Client Request
-     ↓
-Backend Controller
-     ↓
-child_process.exec (Promisified)
-     ↓
-OS Shell Execution
-     ↓
-stdout / stderr Captured
-     ↓
-Response & Logs Sent to UI
-
-
-This flow is the same architectural principle used by platforms like CodeSandbox, Replit, and StackBlitz.
-
-🧠 Key Technologies Used
-child_process.exec
-
-Allows the backend to run system-level commands such as:
-
-mkdir
-
-npm init
-
-npm install
-
-npm run dev
-
-Node.js itself cannot perform these operations without delegating them to the operating system.
-
-util.promisify
-
-The exec API is callback-based by default.
-To support clean, readable, and scalable async workflows, it is converted into a Promise-based API using util.promisify.
-
-This enables:
-
-async/await syntax
-
-Sequential execution of commands
-
-Proper error handling
-
-Production-ready control flow
-
-📌 Example: Core Execution Logic
-const execPromisified = util.promisify(child_process.exec);
-
-const { stdout, stderr } = await execPromisified('dir');
-
-
-stdout captures normal execution logs (build output, success messages)
-
-stderr captures errors (compilation failures, runtime crashes)
-
-These outputs are surfaced directly in the sandbox terminal and error panels.
-
-🧩 Why This Is Critical for a CodeSandbox Clone
-
-Without this execution layer:
-
-❌ Projects cannot be created dynamically
-
-❌ Dependencies cannot be installed
-
-❌ User code cannot run
-
-❌ Logs cannot be streamed
-
-❌ The platform becomes a static editor only
-
-With this layer:
-
-✅ Full project lifecycle is automated
-
-✅ True IDE-like behavior is achieved
-
-✅ Backend controls and monitors execution
-
-✅ Frontend becomes a live coding environment
-
-This module is therefore the backbone of the entire system.
-
-🔐 Future Enhancements
-
-Containerized execution using Docker
-
-Per-user sandbox isolation
-
-Real-time log streaming via WebSockets
-
-Resource limits (CPU / memory)
-
-Secure command whitelisting
-
-🏁 Summary (For Interviewers)
-
-This module implements the execution layer of the CodeSandbox clone. By leveraging Node.js child processes with promisified command execution, the backend can dynamically create projects, install dependencies, run applications, and stream logs—making the platform function as a real online development environment rather than a static code editor.
-
-If you want, I can:
-
-Shorten this for 1-page README
-
-Rewrite it in more technical / system-design language
-
-Add architecture diagrams
-
-Align it with TanStack Query + frontend flow
-
-Just tell me how deep you want the README to go.
-_____________________
-I want this all command execute inside projects folder --> unique id folder inside that
-____________________________________-
-to create folder of react we use 
-npm create vite@Latest sandbox  -- --template react
-------------------------------------------------
-npm i directory-tree
-dsa ques or backend ques for  recursive approach for folder and fle directory path printing
+## 🔐 Security
+- **Isolation**: All code execution is confined to Docker containers.
+- **Environment Safety**: Secrets are managed via `.env` files; no hardcoded keys.
+- **Path Validation**: Agent tools include protection against path traversal.

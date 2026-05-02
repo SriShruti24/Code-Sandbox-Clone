@@ -4,6 +4,7 @@ import { REACT_PROJECT_COMMAND } from "../config/serverConfig.js";
 import { execPromisified } from "../utils/execUtility.js";
 import path from "path";
 import directoryTree from "directory-tree";
+import os from "os";
 
 const VITE_CONFIG_TEMPLATE = `import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -13,15 +14,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: process.env.VITE_PORT || 5173,
+    strictPort: true,
     watch: {
       usePolling: true,
       interval: 1000,
     },
-    hmr: {
-      host: 'localhost',
-      port: process.env.VITE_PORT || 5173,
-      protocol: 'ws',
-    }
+    hmr: false
   }
 })
 `;
@@ -43,10 +41,6 @@ export const createProjectService = async () => {
   const viteConfigPath = path.join(`./projects/${projectId}/sandbox`, 'vite.config.js');
   await fs.writeFile(viteConfigPath, VITE_CONFIG_TEMPLATE);
   console.log("Updated vite.config.js with Docker-optimized settings");
-
-  // Fix permissions so the sandbox user (non-root) can write to this directory
-  await execPromisified(`chmod -R 777 ./projects/${projectId}`);
-  console.log("Fixed permissions for sandbox user");
 
   return projectId;
 };
