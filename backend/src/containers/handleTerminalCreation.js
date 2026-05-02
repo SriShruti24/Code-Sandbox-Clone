@@ -8,34 +8,36 @@ export const handleTerminalCreation=(container,ws)=>{
         Tty: true,
         User: "sandbox",
     }, (err, exec) => {
-        if(err) {
-            console.log("Error while creating exec", err);
+        if (err) {
+            console.error("Error creating terminal exec session:", err);
             return;
         }
 
         exec.start({
             hijack: true,
         }, (err, stream) => {
-            if(err) {
-                console.log("Error while starting exec", err);
+            if (err) {
+                console.error("Error starting terminal exec session:", err);
                 return;
             }
 
             // Step 1: Stream processing
             processStreamOutput(stream, ws);
-            // Step 2: Stream writing
 
+            // Step 2: Stream writing
             ws.on("message", (data) => {
-                if(data === "getPort") {
+                if (data === "getPort") {
                     container.inspect((err, data) => {
-                        const port = data.NetworkSettings;
-                        console.log(port);
-                    })
+                        if (err) {
+                            console.error("Failed to inspect container for port:", err);
+                            return;
+                        }
+                    });
                     return;
                 }
                 stream.write(data);
-            })
-        })
+            });
+        });
     })
 }
 function processStreamOutput(stream, ws) {

@@ -43,7 +43,6 @@ export const EditorComponent = () => {
     // Set new timer
     timerId.current = setTimeout(() => {
       const editorContent = value;
-      console.log("Sending writefile event");
       editorSocket.emit("writeFile", {
         data: editorContent,
         pathToFileOrFolder: activeFileTab.path

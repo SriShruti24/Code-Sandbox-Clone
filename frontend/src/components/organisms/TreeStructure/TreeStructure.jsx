@@ -15,9 +15,7 @@ export const TreeStructure = () => {
         y: fileContextY } = useFileContextMenuStore();
 
     useEffect(() => {
-        if(treeStructure) {
-            console.log("tree:", treeStructure);
-        } else {
+        if(!treeStructure) {
             setTreeStructure();
         }
     }, [setTreeStructure, treeStructure]);

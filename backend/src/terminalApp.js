@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'node:http';
-import { handleContainerCreate, listContainer } from './containers/handleContainerCreate.js';
+import { handleContainerCreate } from './containers/handleContainerCreate.js';
 import { WebSocketServer } from 'ws';
 import { handleTerminalCreation } from './containers/handleTerminalCreation.js';
 
 
 const app = express();
+
 const server = createServer(app);
 
 
@@ -16,8 +17,7 @@ app.use(cors());
 
 
 server.listen(4000, () => {
-    console.log(`Server is running on port ${4000}`);
-    console.log(process.cwd())
+    console.info(`Terminal WebSockets Server is running on port 4000`);
 });
 
 const webSocketForTerminal = new WebSocketServer({
@@ -28,12 +28,21 @@ webSocketForTerminal.on("connection", async (ws, req, container) => {
     const isTerminal = req.url.includes("/terminal");
 
     if(isTerminal) {
+
         const projectId = req.url.split("=")[1];
-        console.log("Project id received after connection", projectId);
 
-        const container = await handleContainerCreate(projectId, webSocketForTerminal);
+        if (!projectId) {
+            ws.close();
+            return;
+        }
 
-        handleTerminalCreation(container, ws);
+        try {
+            const container = await handleContainerCreate(projectId, webSocketForTerminal);
+            handleTerminalCreation(container, ws);
+        } catch (error) {
+            console.error("Terminal connection setup failed:", error);
+            ws.close();
+        }
     }
     
 });

@@ -21,7 +21,6 @@ export const Browser = ({ projectId }) => {
 
     useEffect(() => {
         const handleFileChange = (data) => {
-            console.log("File changed, auto-refreshing browser:", data);
             if(browserRef.current) {
                 const oldAddr = browserRef.current.src;
                 browserRef.current.src = oldAddr;

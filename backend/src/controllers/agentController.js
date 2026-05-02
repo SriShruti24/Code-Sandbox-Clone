@@ -61,7 +61,6 @@ export const runAgentController = async (req, res) => {
     message: "Agent started working on your goal",
   });
 
-  // Run the agent asynchronously
   try {
     await runAgent(projectId, goal, emitLog);
   } catch (err) {

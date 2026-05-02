@@ -21,7 +21,7 @@ const io = new Server(server, {
 
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api", apiRouter);
@@ -37,7 +37,10 @@ editorNamespace.on("connection", (socket) => {
 
   let projectId = socket.handshake.query["projectId"];
 
-  console.log("Project id received after connection", projectId);
+  if (!projectId) {
+      socket.disconnect();
+      return;
+  }
 
   if (projectId) {
     var watcher = chokidar.watch(`./projects/${projectId}`, {
@@ -50,7 +53,6 @@ editorNamespace.on("connection", (socket) => {
     });
 
     watcher.on("all", (event, path) => {
-      console.log(event, path);
       editorNamespace.emit("fileChanged", {
         event: event,
         path: path,
@@ -63,7 +65,6 @@ editorNamespace.on("connection", (socket) => {
   handleEditorSocketEvents(socket, editorNamespace);
 
   socket.on("disconnect", async () => {
-    console.log("editor disconnected");
     if (watcher) {
       await watcher.close();
     }
@@ -71,6 +72,5 @@ editorNamespace.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(process.cwd());
+  console.info(`Editor & API Server is running on port ${PORT}`);
 });

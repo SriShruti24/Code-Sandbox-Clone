@@ -1,17 +1,19 @@
-import { useParams } from "react-router-dom"
-import { EditorComponent } from "../components/molecules/EditorComponent/EditorComponent";
-import { TreeStructure } from "../components/organisms/TreeStructure/TreeStructure";
 import { useEffect, useState } from "react";
-import { useTreeStructureStore } from "../stores/treeStructureStore";
-import { useEditorSocketStore } from "../stores/editorSocketStore";
+import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
-import { BrowserTerminal } from "../components/molecules/BrowserTerminal/BrowserTerminal";
-import { useTerminalSocketStore } from "../stores/terminalSocketStore";
-import { Browser } from "../components/organisms/Browser/Browser";
-import { AgentPanel } from "../components/organisms/AgentPanel/AgentPanel";
 import { Button } from "antd";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
+
+import { EditorComponent } from "../components/molecules/EditorComponent/EditorComponent";
+import { TreeStructure } from "../components/organisms/TreeStructure/TreeStructure";
+import { BrowserTerminal } from "../components/molecules/BrowserTerminal/BrowserTerminal";
+import { Browser } from "../components/organisms/Browser/Browser";
+import { AgentPanel } from "../components/organisms/AgentPanel/AgentPanel";
+
+import { useTreeStructureStore } from "../stores/treeStructureStore";
+import { useEditorSocketStore } from "../stores/editorSocketStore";
+import { useTerminalSocketStore } from "../stores/terminalSocketStore";
 export const ProjectPlayground = () => {
 
     const {projectId: projectIdFromUrl } = useParams();
@@ -37,12 +39,10 @@ export const ProjectPlayground = () => {
             try {
                 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
                 const wsUrl = `${protocol}//${window.location.host}/terminal?projectId=${projectIdFromUrl}`;
-
                 const ws = new WebSocket(wsUrl);
                 setTerminalSocket(ws);
-                
-            } catch(error) {
-                console.log("error in ws", error);
+            } catch (error) {
+                console.error("Terminal WebSocket connection failed:", error);
             }
             setEditorSocket(editorSocketConn);
         }
@@ -85,16 +85,10 @@ export const ProjectPlayground = () => {
                         }}
                     >
 
-                    <Allotment
-                        vertical={true}
-                    >
+                    <Allotment vertical={true}>
                         <EditorComponent />
-                        {/* <Divider style={{color: 'white', backgroundColor: '#333254'}} plain>Terminal</Divider> */}
                         <BrowserTerminal />
                     </Allotment>
-                        
-                       
-                        
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                         {/* Tab Buttons */}
@@ -173,11 +167,6 @@ export const ProjectPlayground = () => {
 
             </div>
         </div>
-           
-            {/* <EditorButton isActive={false} /> 
-            <EditorButton isActive={true}/>  */}
-            
-            
         </>
-    )
-}
+    );
+};

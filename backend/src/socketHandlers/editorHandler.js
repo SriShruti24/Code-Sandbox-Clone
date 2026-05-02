@@ -10,8 +10,7 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
                 data: "File written successfully",
                 path: pathToFileOrFolder,
             })
-        } catch(error) {
-            console.log("Error writing the file", error);
+        } catch (error) {
             socket.emit("error", {
                 data: "Error writing the file",
             });
@@ -32,7 +31,6 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
                 // File doesn't exist, which is expected — continue creating it
             }
 
-            // Ensure parent directory exists
             const parentDir = path.dirname(pathToFileOrFolder);
             await fs.mkdir(parentDir, { recursive: true });
 
@@ -40,8 +38,7 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
             socket.emit("createFileSuccess", {
                 data: "File created successfully",
             });
-        } catch(error) {
-            console.log("Error creating the file", error);
+        } catch (error) {
             socket.emit("error", {
                 data: "Error creating the file",
             });
@@ -52,13 +49,11 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
     socket.on("readFile", async ({ pathToFileOrFolder }) => {
         try {
             const response = await fs.readFile(pathToFileOrFolder);
-            console.log(response.toString());
             socket.emit("readFileSuccess", {
                 value: response.toString(),
                 path: pathToFileOrFolder,
-            })
-        } catch(error) {
-            console.log("Error reading the file", error);
+            });
+        } catch (error) {
             socket.emit("error", {
                 data: "Error reading the file",
             });
@@ -71,8 +66,7 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
             socket.emit("deleteFileSuccess", {
                 data: "File deleted successfully",
             });
-        } catch(error) {
-            console.log("Error deleting the file", error);
+        } catch (error) {
             socket.emit("error", {
                 data: "Error deleting the file",
             });
@@ -86,8 +80,7 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
             socket.emit("createFolderSuccess", {
                 data: "Folder created successfully",
             });
-        } catch(error) {
-            console.log("Error creating the folder", error);
+        } catch (error) {
             socket.emit("error", {
                 data: "Error creating the folder",
             });
@@ -101,8 +94,7 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
             socket.emit("deleteFolderSuccess", {
                 data: "Folder deleted successfully",
             });
-        } catch(error) {
-            console.log("Error deleting the folder", error);
+        } catch (error) {
             socket.emit("error", {
                 data: "Error deleting the folder",
             });
@@ -110,10 +102,9 @@ export const handleEditorSocketEvents = (socket,editorNamespace) => {
     });
     socket.on("getPort", async ({ containerName }) => {
         const port = await getContainerPort(containerName);
-        console.log("port data", port);
         socket.emit("getPortSuccess", {
             port: port,
-        })
+        });
     })
 
 }

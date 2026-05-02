@@ -11,7 +11,7 @@ export const CreateProject = () => {
       const response = await createProjectMutation();
       navigate(`/project/${response.data}`);
     } catch (error) {
-      console.log("Error creating project", error);
+      console.error("Error creating project", error);
     }
   }
 

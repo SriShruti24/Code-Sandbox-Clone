@@ -11,9 +11,8 @@ services:
     volumes:
       - ./backend:/app
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - PORT=3000
-      - HOST_PROJECT_PATH=${HOST_PROJECT_PATH:-}
+    env_file:
+      - .env
     networks:
       - sandbox-network
 
@@ -26,8 +25,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    environment:
-      - VITE_API_URL=http://localhost:3000
+    env_file:
+      - .env
     depends_on:
       - backend
     networks:
