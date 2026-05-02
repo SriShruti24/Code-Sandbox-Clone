@@ -1,5 +1,14 @@
 # CogniBox: Agentic AI Code Sandbox 🚀
 
+
+<p align="center">
+  <img src="docs/assests/landing%20page.png" alt="CogniBox Landing Page" width="100%">
+</p>
+
+<p align="center">
+  <video src="docs/assests/code-sandbox.mp4" width="100%" controls autoplay muted loop></video>
+</p>
+
 <p align="center">
   <strong>An autonomous, browser-based development environment where an AI agent writes, tests, and deploys code for you — inside a fully isolated Docker sandbox.</strong>
 </p>
@@ -38,6 +47,10 @@ CogniBox isn't just another code editor — it's a **collaborative AI engineerin
 4. **Iterates** based on tool results until the goal is complete
 
 All of this happens inside an isolated Docker container, with the agent's entire reasoning process streamed live to your browser.
+
+<p align="center">
+  <img src="docs/assests/multiple%20functionalities.png" alt="CogniBox Functionalities" width="800">
+</p>
 
 ---
 
@@ -110,6 +123,10 @@ graph TD
     style Agent fill:#8be9fd,stroke:#8be9fd,color:#282a36
     style Sandbox fill:#50fa7b,stroke:#50fa7b,color:#282a36
 ```
+
+<p align="center">
+  <img src="docs/assests/live%20browser.png" alt="CogniBox Live Browser" width="800">
+</p>
 
 ### Key Design Decisions
 
@@ -338,26 +355,22 @@ Code-Sandbox-Clone/
 
 ## 👥 Team
 
-> **Team Name**: CogniBox
+> **Team Name**: SheCodes Trinity
 
-| Name | Role | GitHub |
-|------|------|--------|
-| Team Member 1 | Full-Stack + AI Agent | [@SriShruti24](https://github.com/SriShruti24) |
-| Team Member 2 | Role | @github_handle |
-| Team Member 3 | Role | @github_handle |
-| Team Member 4 | Role | @github_handle |
-
-> ⚠️ **Update this section with your actual team members before submission.**
+| Name | Role |
+|------|------|
+| Shruti Srivastava | Full-Stack + AI Agent | 
+| Varnika Chaudhary | Testing   | 
+| Drishti Dubey |   | 
 
 ---
 
 ## 🎬 Demo
 
-- **Demo Video**: [Link to 5-minute demo video] <!-- TODO: Add link -->
-- **Live Deployment**: [Link to deployed app] <!-- TODO: Add link if deployed -->
+- **Demo Video**: [Watch the walkthrough](docs/assests/code-sandbox.mp4)
+
+<p align="center">
+  <video src="docs/assests/code-sandbox.mp4" width="100%" controls></video>
+</p>
 
 ---
-
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
