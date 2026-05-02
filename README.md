@@ -361,7 +361,7 @@ Code-Sandbox-Clone/
 |------|------|
 | Shruti Srivastava | Full-Stack + AI Agent | 
 | Varnika Chaudhary | Testing   | 
-| Drishti Dubey | Frontend | 
+| Drishti Dubey |Frontend  | 
 
 ---
 
