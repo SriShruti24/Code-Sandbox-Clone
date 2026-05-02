@@ -3,9 +3,13 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import fs from "fs/promises";
+import fsSync from "fs";
 import path from "path";
 import Docker from "dockerode";
-import promptsConfig from "../config/agent_prompts.json" assert { type: "json" };
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const promptsConfig = JSON.parse(fsSync.readFileSync(path.join(__dirname, "../config/agent_prompts.json"), "utf-8"));
 
 const docker = new Docker();
 
@@ -62,10 +66,10 @@ export function createSandboxTools(projectId) {
   const writeFileTool = new DynamicStructuredTool({
     name: "writeFile",
     description:
-      "Write content to a file inside the sandbox project. Creates the file and any parent directories if they don't exist. Use relative paths like 'src/components/Counter.jsx'. NEVER use absolute paths.",
+      "Write content to a file inside the sandbox project. Creates the file and any parent directories if they don't exist. Use relative paths like 'src/components/Counter.jsx'. NEVER use absolute paths. The content must be the exact code/text to write, properly formatted with real newlines (use \\n for line breaks).",
     schema: z.object({
       filePath: z.string().describe("Relative path to the file inside the sandbox project, e.g. 'src/components/Counter.jsx'"),
-      content: z.string().describe("The full content to write to the file"),
+      content: z.string().describe("The complete file content as a single string. Use actual line breaks with \\n. Example: 'import React from \"react\";\\n\\nfunction App() {\\n  return <div>Hello</div>;\\n}'"),
     }),
     func: async ({ filePath, content }) => {
       try {
@@ -258,7 +262,18 @@ export async function runAgent(projectId, goal, emitLog) {
               });
             },
             handleChainError: (err) => {
-              emitLog({ type: "error", message: `Error: ${err.message}` });
+              const errorMsg = err.message || String(err);
+              let helpfulMessage = `Error: ${errorMsg}`;
+              
+              // Provide specific guidance for common errors
+              if (errorMsg.includes("tool_use_failed") || errorMsg.includes("invalid_request_error")) {
+                helpfulMessage += "\n💡 RECOVERY TIP: The tool call formatting may be incorrect. Simplify the code or break it into smaller chunks. Check that all quotes and brackets are balanced.";
+              }
+              if (errorMsg.includes("writeFile")) {
+                helpfulMessage += "\n💡 For writeFile errors: Make sure the file content is valid code with proper escaping. If the file is large, it may need to be split into smaller files.";
+              }
+              
+              emitLog({ type: "error", message: helpfulMessage });
             },
           },
         ],

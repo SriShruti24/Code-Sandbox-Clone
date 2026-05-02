@@ -35,8 +35,18 @@ export const useEditorSocketStore = create((set) => ({
             projectTreeStructureSetter();
         });
 
-         incomingSocket?.on("getPortSuccess", ({ port }) => {
+          incomingSocket?.on("getPortSuccess", ({ port }) => {
             portSetter(port);
+        })
+
+        incomingSocket?.on("fileChanged", (data) => {
+            projectTreeStructureSetter();
+            if (data.event === "change" || data.event === "add") {
+                const currentTab = useActiveFileTabStore.getState().activeFileTab;
+                if (currentTab?.path === data.path) {
+                    incomingSocket?.emit("readFile", { pathToFileOrFolder: data.path });
+                }
+            }
         })
 
         set({

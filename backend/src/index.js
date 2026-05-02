@@ -68,6 +68,10 @@ editorNamespace.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.info(`Editor & API Server is running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => {
+    console.info(`Editor & API Server is running on port ${PORT}`);
+  });
+}
+
+export { app, server };

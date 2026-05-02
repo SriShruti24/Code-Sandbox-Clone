@@ -16,9 +16,11 @@ app.use(express.urlencoded());
 app.use(cors());
 
 
-server.listen(4000, () => {
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(4000, () => {
     console.info(`Terminal WebSockets Server is running on port 4000`);
-});
+  });
+}
 
 const webSocketForTerminal = new WebSocketServer({
     server
