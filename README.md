@@ -2,11 +2,11 @@
 
 
 <p align="center">
-  <img src="docs/assests/landing%20page.png" alt="CogniBox Landing Page" width="100%">
+  <img src="docs/assets/landing%20page.png" alt="CogniBox Landing Page" width="100%">
 </p>
 
 <p align="center">
-  <video src="docs/assests/code-sandbox.mp4" width="100%" controls autoplay muted loop></video>
+  <video src="docs/assets/code-sandbox.mp4" width="100%" controls autoplay muted loop></video>
 </p>
 
 <p align="center">
@@ -49,7 +49,7 @@ CogniBox isn't just another code editor — it's a **collaborative AI engineerin
 All of this happens inside an isolated Docker container, with the agent's entire reasoning process streamed live to your browser.
 
 <p align="center">
-  <img src="docs/assests/multiple%20functionalities.png" alt="CogniBox Functionalities" width="800">
+  <img src="docs/assets/multiple%20functionalities.png" alt="CogniBox Functionalities" width="800">
 </p>
 
 ---
@@ -125,7 +125,7 @@ graph TD
 ```
 
 <p align="center">
-  <img src="docs/assests/live%20browser.png" alt="CogniBox Live Browser" width="800">
+  <img src="docs/assets/live%20browser.png" alt="CogniBox Live Browser" width="800">
 </p>
 
 ### Key Design Decisions
@@ -361,16 +361,16 @@ Code-Sandbox-Clone/
 |------|------|
 | Shruti Srivastava | Full-Stack + AI Agent | 
 | Varnika Chaudhary | Testing   | 
-| Drishti Dubey |   | 
+| Drishti Dubey |Full Stack  | 
 
 ---
 
 ## 🎬 Demo
 
-- **Demo Video**: [Watch the walkthrough](docs/assests/code-sandbox.mp4)
+- **Demo Video**: [Watch the walkthrough](docs/assets/code-sandbox.mp4)
 
 <p align="center">
-  <video src="docs/assests/code-sandbox.mp4" width="100%" controls></video>
+  <video src="docs/assets/code-sandbox.mp4" width="100%" controls></video>
 </p>
 
 ---
