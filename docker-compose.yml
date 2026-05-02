@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: ./backend
+    container_name: cognibox-backend
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - sandbox-image
+
+  frontend:
+    build: ./frontend
+    container_name: cognibox-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
+
+  sandbox-image:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.sandbox
+    image: sandbox
+    container_name: sandbox-builder
+    # This service just ensures the image is built and tagged
+    entrypoint: ["echo", "Sandbox image is ready"]
