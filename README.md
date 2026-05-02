@@ -5,8 +5,9 @@
   <img src="docs/assets/landing%20page.png" alt="CogniBox Landing Page" width="100%">
 </p>
 
-https://github.com/SriShruti24/Code-Sandbox-Clone/raw/add-ai-agent-feature/docs/assets/code-sandbox.mp4
-
+<p align="center">
+  <strong>[Video](https://drive.google.com/file/d/1VJ1gtbHOnevFvb5i0opMtdd1cuunSyFj/view?usp=sharing)</strong>
+</p>
 
 <p align="center">
   <strong>An autonomous, browser-based development environment where an AI agent writes, tests, and deploys code for you — inside a fully isolated Docker sandbox.</strong>
@@ -366,9 +367,7 @@ Code-Sandbox-Clone/
 
 ## 🎬 Demo
 
-- **Demo Video**: [Watch the walkthrough](docs/assets/code-sandbox.mp4)
-
-https://github.com/SriShruti24/Code-Sandbox-Clone/raw/add-ai-agent-feature/docs/assets/code-sandbox.mp4
+- **Demo Video**: [Video](https://drive.google.com/file/d/1VJ1gtbHOnevFvb5i0opMtdd1cuunSyFj/view?usp=sharing)
 
 
 ---
